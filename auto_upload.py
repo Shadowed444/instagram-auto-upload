@@ -9,7 +9,7 @@ app = Flask(__name__)
 def run_automation():
     while True:
         print("Running automation script...")
-        os.system("python your_script.py")  # Replace with your actual script
+        os.system("python auto_upload.py")  # Replace with your actual script
         time.sleep(3600)  # Runs every hour (adjust as needed)
 
 # Start automation in a separate thread
