@@ -1,1 +1,1 @@
-web: python auto_upload.py
+web: python /workspace/auto_upload.py
