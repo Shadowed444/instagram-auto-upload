@@ -1,1 +1,1 @@
-worker: python auto_upload.py
+web: python auto_upload.py
