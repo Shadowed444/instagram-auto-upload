@@ -18,14 +18,15 @@ def list_files(folder_path):
         files = dbx.files_list_folder(folder_path).entries
         return [file.name for file in files if isinstance(file, dropbox.files.FileMetadata)]
     except Exception as e:
-        print("Error listing files:", e)
+        print(f"[ERROR] Failed to list files in {folder_path}: {e}")
         return []
 
-# Function to move a file
+# Function to move a video from Scheduled to To_Post
 def move_video():
     files = list_files(SCHEDULED_FOLDER)
+    
     if not files:
-        print("No videos left to schedule.")
+        print("[INFO] No videos left to schedule.")
         return None  # No video to post
 
     # Select a random video
@@ -35,26 +36,15 @@ def move_video():
 
     try:
         dbx.files_move_v2(source_path, destination_path)
-        print(f"Moved {selected_video} to {TO_POST_FOLDER} at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        print(f"[SUCCESS] Moved {selected_video} to {TO_POST_FOLDER} at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         return selected_video  # Return the moved file name
     except Exception as e:
-        print("Error moving video:", e)
+        print(f"[ERROR] Failed to move {selected_video}: {e}")
         return None
 
-# Function to delete the uploaded video
-def delete_uploaded_video(video_name):
-    video_path = f"{TO_POST_FOLDER}/{video_name}"
-    try:
-        dbx.files_delete_v2(video_path)
-        print(f"Deleted {video_name} from {TO_POST_FOLDER} after uploading.")
-    except Exception as e:
-        print("Error deleting video:", e)
-
-# Run the scheduler every 24 hours
-while True:
+# **Run only once, no infinite loop**
+if __name__ == "__main__":
     video = move_video()
     if video:
-        time.sleep(60 * 60)  # Wait 1 hour (so Instagram has time to upload)
-        delete_uploaded_video(video)
-    
-    time.sleep(24 * 60 * 60)  # Wait 24 hours before moving the next video
+        print(f"[INFO] {video} is now in the To_Post folder.")
+
