@@ -5,6 +5,7 @@ import dropbox
 from flask import Flask
 from datetime import datetime
 import requests
+import pytz
 
 app = Flask(__name__)
 
@@ -76,11 +77,26 @@ def move_video():
 def home():
     return "Server is running!"
 
-if __name__ == "__main__":
+def schedule_loop():
+    sf_timezone = pytz.timezone("America/Los_Angeles")  # San Francisco timezone
+    
     while True:
-        current_time = datetime.now().strftime("%H:%M")
-        if current_time in ["09:00", "17:00"]:
+        current_time = datetime.now(sf_timezone).strftime("%H:%M")
+        
+        # Define the exact times based on PST/PDT
+        if current_time in ["20:30", "03:30"]:  # PST (Before March 9, 2025)
             move_video()
-            time.sleep(60)  # Prevent multiple moves within the same minute
+            time.sleep(60)
+        elif current_time in ["21:30", "04:30"]:  # PDT (After March 9, 2025)
+            move_video()
+            time.sleep(60)
+            
         time.sleep(30)  # Check every 30 seconds
 
+if __name__ == "__main__":
+    from threading import Thread
+    # Start the scheduler loop in a separate thread
+    Thread(target=schedule_loop, daemon=True).start()
+
+    # Start the Flask server (this keeps the Koyeb service alive)
+    app.run(host="0.0.0.0", port=PORT)
