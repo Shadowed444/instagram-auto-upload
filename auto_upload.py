@@ -5,7 +5,7 @@ import dropbox
 from flask import Flask
 from datetime import datetime
 import requests
-import pytz
+import pytz  # Import timezone module
 
 app = Flask(__name__)
 
@@ -19,6 +19,10 @@ DROPBOX_ACCESS_TOKEN = os.getenv("DROPBOX_ACCESS_TOKEN")
 # Dropbox Folder Paths
 SCHEDULED_FOLDER = "/Scheduled_Videos"
 TO_POST_FOLDER = "/To_Post"
+
+# Define timezones
+IST = pytz.timezone("Asia/Kolkata")
+ET = pytz.timezone("America/New_York")  # Washington, DC time
 
 # Function to Refresh Dropbox Access Token
 def refresh_dropbox_token():
@@ -35,7 +39,7 @@ def refresh_dropbox_token():
         )
         response.raise_for_status()
         new_token = response.json()["access_token"]
-        DROPBOX_ACCESS_TOKEN = new_token  # Update variable in script
+        DROPBOX_ACCESS_TOKEN = new_token
         print("[SUCCESS] Dropbox access token refreshed.")
     except Exception as e:
         print(f"[ERROR] Failed to refresh Dropbox access token: {e}")
@@ -53,7 +57,7 @@ def list_files(dbx, folder_path):
         return []
 
 def move_video():
-    refresh_dropbox_token()  # Refresh token before making API calls
+    refresh_dropbox_token()
     dbx = get_dropbox_client()
     files = list_files(dbx, SCHEDULED_FOLDER)
     
@@ -67,7 +71,7 @@ def move_video():
 
     try:
         dbx.files_move_v2(source_path, destination_path)
-        print(f"[SUCCESS] Moved {selected_video} to {TO_POST_FOLDER} at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        print(f"[SUCCESS] Moved {selected_video} to {TO_POST_FOLDER} at {datetime.now(IST).strftime('%Y-%m-%d %H:%M:%S')} IST")
         return selected_video
     except Exception as e:
         print(f"[ERROR] Failed to move {selected_video}: {e}")
@@ -78,25 +82,22 @@ def home():
     return "Server is running!"
 
 def schedule_loop():
-    sf_timezone = pytz.timezone("America/Los_Angeles")  # San Francisco timezone
-    
     while True:
-        current_time = datetime.now(sf_timezone).strftime("%H:%M")
-        
-        # Define the exact times based on PST/PDT
-        if current_time in ["23:30", "06:30"]:  # PST (Before March 9, 2025)
+        now = datetime.now(ET)  # Get current time in Washington, DC timezone
+        ist_time = now.astimezone(IST).strftime("%H:%M")
+
+        if ist_time in ["10:00", "17:00"]:  # Runs at 10:00 AM & 5:00 PM IST
             move_video()
-            time.sleep(60)
-        elif current_time in ["00:30", "07:30"]:  # PDT (After March 9, 2025)
-            move_video()
-            time.sleep(60)
-            
+            time.sleep(60)  # Prevent multiple moves within the same minute
+
         time.sleep(30)  # Check every 30 seconds
 
 if __name__ == "__main__":
     from threading import Thread
-    # Start the scheduler loop in a separate thread
+
+    # Start the scheduled loop in a separate thread
     Thread(target=schedule_loop, daemon=True).start()
 
-    # Start the Flask server (this keeps the Koyeb service alive)
+    # Start Flask server with the correct port logic
     app.run(host="0.0.0.0", port=PORT)
+
