@@ -77,12 +77,10 @@ def home():
     return "Server is running!"
 
 if __name__ == "__main__":
-    # Start Flask server in a separate thread
-    import threading
-    threading.Thread(target=app.run, kwargs={"host": "0.0.0.0", "port": PORT}, daemon=True).start()
-
-    # Run video-moving logic in a loop
     while True:
-        move_video()
-        time.sleep(3600)  # Runs every 1 hour
+        current_time = datetime.now().strftime("%H:%M")
+        if current_time in ["09:00", "17:00"]:
+            move_video()
+            time.sleep(60)  # Prevent multiple moves within the same minute
+        time.sleep(30)  # Check every 30 seconds
 
