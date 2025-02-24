@@ -84,10 +84,10 @@ def schedule_loop():
         current_time = datetime.now(sf_timezone).strftime("%H:%M")
         
         # Define the exact times based on PST/PDT
-        if current_time in ["20:30", "03:30"]:  # PST (Before March 9, 2025)
+        if current_time in ["23:30", "06:30"]:  # PST (Before March 9, 2025)
             move_video()
             time.sleep(60)
-        elif current_time in ["21:30", "04:30"]:  # PDT (After March 9, 2025)
+        elif current_time in ["00:30", "07:30"]:  # PDT (After March 9, 2025)
             move_video()
             time.sleep(60)
             
