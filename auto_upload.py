@@ -10,6 +10,10 @@ KOYEB_API_KEY = os.getenv("KOYEB_API_KEY")  # Store in Koyeb
 KOYEB_APP_ID = os.getenv("KOYEB_APP_ID")  # Store in Koyeb
 KOYEB_ENV_VAR_NAME = "DROPBOX_ACCESS_TOKEN"  # Name of the token variable in Koyeb
 
+def home():
+    return "Service is running!"
+
+
 def refresh_dropbox_token():
     """Refresh the Dropbox access token using the refresh token."""
     url = "https://api.dropbox.com/oauth2/token"
@@ -33,6 +37,9 @@ def update_koyeb_env_var(new_token):
     """Updates the Dropbox access token in Koyeb environment variables."""
     url = f"https://app.koyeb.com/v1/apps/{KOYEB_APP_ID}/services"
     headers = {"Authorization": f"Bearer {KOYEB_API_KEY}", "Content-Type": "application/json"}
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8080)
     
     # Fetch the current service ID
     service_response = requests.get(url, headers=headers)
