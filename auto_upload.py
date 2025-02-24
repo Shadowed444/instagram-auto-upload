@@ -77,5 +77,12 @@ def home():
     return "Server is running!"
 
 if __name__ == "__main__":
-    move_video()
-    app.run(host="0.0.0.0", port=PORT)
+    # Start Flask server in a separate thread
+    import threading
+    threading.Thread(target=app.run, kwargs={"host": "0.0.0.0", "port": PORT}, daemon=True).start()
+
+    # Run video-moving logic in a loop
+    while True:
+        move_video()
+        time.sleep(3600)  # Runs every 1 hour
+
