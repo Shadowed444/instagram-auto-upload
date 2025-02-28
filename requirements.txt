@@ -9,3 +9,4 @@ pytz
 selenium
 webdriver-manager
 instagrapi
+Pillow>=8.1.1
