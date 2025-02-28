@@ -6,3 +6,5 @@ urllib3==2.3.0
 flask
 dropbox
 pytz
+selenium
+webdriver-manager

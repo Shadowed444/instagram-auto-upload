@@ -6,6 +6,8 @@ from flask import Flask
 from datetime import datetime
 import requests
 import pytz  # Import timezone module
+import instagrapi
+import pickle
 
 app = Flask(__name__)
 
@@ -15,6 +17,9 @@ DROPBOX_APP_KEY = os.getenv("DROPBOX_APP_KEY")
 DROPBOX_APP_SECRET = os.getenv("DROPBOX_APP_SECRET")
 DROPBOX_REFRESH_TOKEN = os.getenv("DROPBOX_REFRESH_TOKEN")
 DROPBOX_ACCESS_TOKEN = os.getenv("DROPBOX_ACCESS_TOKEN")
+INSTAGRAM_USERNAME = os.getenv("INSTAGRAM_USERNAME")
+INSTAGRAM_PASSWORD = os.getenv("INSTAGRAM_PASSWORD")
+SESSION_FILE = "instagram_session.pkl"
 
 # Dropbox Folder Paths
 SCHEDULED_FOLDER = "/Scheduled_Videos"
@@ -77,6 +82,37 @@ def move_video():
         print(f"[ERROR] Failed to move {selected_video}: {e}")
         return None
 
+# Instagram session handling
+def load_instagram_session():
+    client = instagrapi.Client()
+    if os.path.exists(SESSION_FILE):
+        try:
+            client.load_settings(SESSION_FILE)
+            client.login(INSTAGRAM_USERNAME, INSTAGRAM_PASSWORD)
+            print("[SUCCESS] Logged in using saved session.")
+            return client
+        except Exception as e:
+            print(f"[WARNING] Failed to use saved session: {e}")
+    
+    # Fresh login if session fails
+    try:
+        client.login(INSTAGRAM_USERNAME, INSTAGRAM_PASSWORD)
+        client.dump_settings(SESSION_FILE)
+        print("[SUCCESS] Logged in and session saved.")
+        return client
+    except Exception as e:
+        print(f"[ERROR] Instagram login failed: {e}")
+        return None
+
+def upload_to_instagram(video_path, caption):
+    client = load_instagram_session()
+    if client:
+        try:
+            client.clip_upload(video_path, caption=caption)
+            print(f"[SUCCESS] Uploaded {video_path} to Instagram.")
+        except Exception as e:
+            print(f"[ERROR] Failed to upload {video_path}: {e}")
+
 @app.route("/")
 def home():
     return "Server is running!"
@@ -87,7 +123,17 @@ def schedule_loop():
         ist_time = now.astimezone(IST).strftime("%H:%M")
 
         if ist_time in ["10:00", "17:00"]:  # Runs at 10:00 AM & 5:00 PM IST
-            move_video()
+            video = move_video()
+            if video:
+                video_path = f"/To_Post/{video}"
+                caption = "Conquer yourself before you conquer the world
+
+Find Your path here at @inspirexmarc
+
+Check the link in bio for Internet resources fueled with inspiration👑...
+
+#motivation #quotes #positivequotes #selfimprovement #mindset #growthmindset #discipline #proveyourself #inspirationalquotes #inspiration #positivity #relatable"
+                upload_to_instagram(video_path, caption)
             time.sleep(60)  # Prevent multiple moves within the same minute
 
         time.sleep(30)  # Check every 30 seconds
@@ -100,4 +146,3 @@ if __name__ == "__main__":
 
     # Start Flask server with the correct port logic
     app.run(host="0.0.0.0", port=PORT)
-
