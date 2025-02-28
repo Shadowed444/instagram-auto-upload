@@ -126,13 +126,13 @@ def schedule_loop():
             video = move_video()
             if video:
                 video_path = f"/To_Post/{video}"
-                caption = "Conquer yourself before you conquer the world
+                caption = """Conquer yourself before you conquer the world
 
 Find Your path here at @inspirexmarc
 
 Check the link in bio for Internet resources fueled with inspiration👑...
 
-#motivation #quotes #positivequotes #selfimprovement #mindset #growthmindset #discipline #proveyourself #inspirationalquotes #inspiration #positivity #relatable"
+#motivation #quotes #positivequotes #selfimprovement #mindset #growthmindset #discipline #proveyourself #inspirationalquotes #inspiration #positivity #relatable"""
                 upload_to_instagram(video_path, caption)
             time.sleep(60)  # Prevent multiple moves within the same minute
 
