@@ -10,3 +10,4 @@ selenium
 webdriver-manager
 instagrapi
 Pillow>=8.1.1
+moviepy>=1.0.3
