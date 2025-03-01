@@ -8,6 +8,10 @@ import requests
 import pytz  # Import timezone module
 import instagrapi
 import pickle
+import pkg_resources
+
+installed_packages = [pkg.key for pkg in pkg_resources.working_set]
+print("[INFO] Installed packages:", installed_packages)
 
 app = Flask(__name__)
 
@@ -122,7 +126,7 @@ def schedule_loop():
         now = datetime.now(ET)  # Get current time in Washington, DC timezone
         ist_time = now.astimezone(IST).strftime("%H:%M")
 
-        if ist_time in ["10:00", "18:20"]:  # Runs at 10:00 AM & 5:00 PM IST
+        if ist_time in ["10:00", "18:35"]:  # Runs at 10:00 AM & 5:00 PM IST
             video = move_video()
             if video:
                 video_path = f"/To_Post/{video}"
