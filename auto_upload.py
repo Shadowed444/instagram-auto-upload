@@ -1,32 +1,21 @@
-import sys
 import os
 import sys
-import os
-
-# Add Heroku's site-packages manually
-heroku_path = "/.heroku/python/lib/python3.10/site-packages"
-if heroku_path not in sys.path:
-    sys.path.append(heroku_path)
-
-# Now try importing
-try:
-    import moviepy.editor
-    print("MoviePy imported successfully!")
-except ModuleNotFoundError:
-    print("Forcing reinstall...")
-    os.system("pip install moviepy imageio[ffmpeg]")
-    import moviepy.editor  # Retry import
-
 import subprocess
 
-def install_dependencies():
-    try:
-        import moviepy.editor
-    except ModuleNotFoundError:
-        subprocess.check_call(["pip", "install", "moviepy", "imageio[ffmpeg]"])
-        import moviepy.editor  # Retry import
+# Print Python paths to debug
+print("Python executable:", sys.executable)
+print("sys.path:", sys.path)
 
-install_dependencies()
+# Uninstall MoviePy first
+subprocess.run(["pip", "uninstall", "-y", "moviepy"], check=True)
+
+# Reinstall MoviePy and dependencies
+subprocess.run(["pip", "install", "--no-cache-dir", "moviepy", "imageio[ffmpeg]"], check=True)
+
+# Try importing again
+import moviepy.editor
+print("✅ MoviePy imported successfully!")
+
 
 import time
 import random
@@ -155,7 +144,7 @@ def schedule_loop():
         now = datetime.now(ET)  # Get current time in Washington, DC timezone
         ist_time = now.astimezone(IST).strftime("%H:%M")
 
-        if ist_time in ["10:00", "19:15"]:  # Runs at 10:00 AM & 5:00 PM IST
+        if ist_time in ["10:00", "19:20"]:  # Runs at 10:00 AM & 5:00 PM IST
             video = move_video()
             if video:
                 video_path = f"/To_Post/{video}"
