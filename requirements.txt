@@ -12,3 +12,4 @@ instagrapi
 Pillow>=8.1.1
 moviepy>=1.0.3
 imageio[ffmpeg]
+setuptools
