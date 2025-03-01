@@ -1,4 +1,15 @@
 import os
+import subprocess
+
+def install_dependencies():
+    try:
+        import moviepy.editor
+    except ModuleNotFoundError:
+        subprocess.check_call(["pip", "install", "moviepy", "imageio[ffmpeg]"])
+        import moviepy.editor  # Retry import
+
+install_dependencies()
+
 import time
 import random
 import dropbox
@@ -126,7 +137,7 @@ def schedule_loop():
         now = datetime.now(ET)  # Get current time in Washington, DC timezone
         ist_time = now.astimezone(IST).strftime("%H:%M")
 
-        if ist_time in ["10:00", "18:50"]:  # Runs at 10:00 AM & 5:00 PM IST
+        if ist_time in ["10:00", "19:10"]:  # Runs at 10:00 AM & 5:00 PM IST
             video = move_video()
             if video:
                 video_path = f"/To_Post/{video}"
