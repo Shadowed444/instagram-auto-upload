@@ -2,20 +2,9 @@ import os
 import sys
 import subprocess
 
-# Print Python paths to debug
-print("Python executable:", sys.executable)
-print("sys.path:", sys.path)
+sys.path.append('/workspace/.heroku/python/lib/python3.10/site-packages')
 
-# Uninstall MoviePy first
-subprocess.run(["pip", "uninstall", "-y", "moviepy"], check=True)
-
-# Reinstall MoviePy and dependencies
-subprocess.run(["pip", "install", "--no-cache-dir", "moviepy", "imageio[ffmpeg]"], check=True)
-
-# Try importing again
-from moviepy.editor import VideoFileClip
-print("✅ MoviePy imported successfully!")
-
+from moviepy.editor import VideoFileClip  # Now import moviepy
 
 import time
 import random
@@ -144,7 +133,7 @@ def schedule_loop():
         now = datetime.now(ET)  # Get current time in Washington, DC timezone
         ist_time = now.astimezone(IST).strftime("%H:%M")
 
-        if ist_time in ["10:00", "19:25"]:  # Runs at 10:00 AM & 5:00 PM IST
+        if ist_time in ["10:00", "19:30"]:  # Runs at 10:00 AM & 5:00 PM IST
             video = move_video()
             if video:
                 video_path = f"/To_Post/{video}"
