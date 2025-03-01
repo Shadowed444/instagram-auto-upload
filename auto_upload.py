@@ -1,10 +1,5 @@
 import os
 import sys
-# Force Koyeb to recognize moviepy
-sys.path.append('/workspace/.heroku/python/lib/python3.10/site-packages')
-
-from moviepy.editor import VideoFileClip  # Now import moviepy
-
 import time
 import random
 import dropbox
@@ -132,7 +127,7 @@ def schedule_loop():
         now = datetime.now(ET)  # Get current time in Washington, DC timezone
         ist_time = now.astimezone(IST).strftime("%H:%M")
 
-        if ist_time in ["10:00", "19:35"]:  # Runs at 10:00 AM & 5:00 PM IST
+        if ist_time in ["10:00", "19:39"]:  # Runs at 10:00 AM & 5:00 PM IST
             video = move_video()
             if video:
                 video_path = f"/To_Post/{video}"
