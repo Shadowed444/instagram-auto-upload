@@ -1,3 +1,9 @@
+# Switch to root user
+USER root
+
+# Install system dependencies (ffmpeg)
+RUN apt-get update && apt-get install -y ffmpeg
+
 # Use an official Python runtime as a parent image
 FROM python:3.10
 
