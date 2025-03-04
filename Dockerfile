@@ -1,4 +1,4 @@
-# Use a pre-built image with FFmpeg
+# Use the jrottenberg/ffmpeg image with Python 3.10
 FROM jrottenberg/ffmpeg:5.1.2-python3.10
 
 # Set the working directory
