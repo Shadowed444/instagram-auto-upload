@@ -1,14 +1,17 @@
 # Switch to root user
 USER root
 
+# Stage 1: Build stage
+FROM ubuntu:latest AS builder
+
 # Install system dependencies (ffmpeg)
 RUN apt-get update && apt-get install -y ffmpeg
 
-# Use an official Python runtime as a parent image
+# Stage 2: Final stage
 FROM python:3.10
 
-# Install system dependencies (ffmpeg)
-RUN apt-get update && apt-get install -y ffmpeg
+# Copy ffmpeg from the builder stage
+COPY --from=builder /usr/bin/ffmpeg /usr/bin/ffmpeg
 
 # Set the working directory
 WORKDIR /workspace
