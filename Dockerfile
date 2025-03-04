@@ -1,5 +1,8 @@
-# Use the jrottenberg/ffmpeg image with Python 3.10
-FROM jrottenberg/ffmpeg:5.1.2-python3.10
+# Use the official Python 3.10 image
+FROM python:3.10
+
+# Install system dependencies (ffmpeg)
+RUN apt-get update && apt-get install -y ffmpeg
 
 # Set the working directory
 WORKDIR /workspace
