@@ -14,6 +14,15 @@ import pkg_resources
 installed_packages = [pkg.key for pkg in pkg_resources.working_set]
 print("[INFO] Installed packages:", installed_packages)
 
+import subprocess
+
+# Check if ffmpeg is installed
+try:
+    subprocess.run(["ffmpeg", "-version"], check=True)
+    print("[SUCCESS] FFmpeg is installed and working.")
+except Exception as e:
+    print(f"[ERROR] FFmpeg is not installed or not working: {e}")
+
 app = Flask(__name__)
 
 # Environment Variables
@@ -127,7 +136,7 @@ def schedule_loop():
         now = datetime.now(ET)  # Get current time in Washington, DC timezone
         ist_time = now.astimezone(IST).strftime("%H:%M")
 
-        if ist_time in ["10:00", "16:17"]:  # Runs at 10:00 AM & 5:00 PM IST
+        if ist_time in ["10:00", "16:30"]:  # Runs at 10:00 AM & 5:00 PM IST
             video = move_video()
             if video:
                 video_path = f"/To_Post/{video}"
