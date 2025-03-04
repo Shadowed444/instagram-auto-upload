@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM python:3.10-slim
+FROM python:3.10
 
 # Install system dependencies (ffmpeg)
 RUN apt-get update && apt-get install -y ffmpeg
