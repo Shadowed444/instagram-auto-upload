@@ -1,17 +1,4 @@
-# Switch to root user
-USER root
-
-# Stage 1: Build stage
-FROM ubuntu:latest AS builder
-
-# Install system dependencies (ffmpeg)
-RUN apt-get update && apt-get install -y ffmpeg
-
-# Stage 2: Final stage
-FROM python:3.10
-
-# Copy ffmpeg from the builder stage
-COPY --from=builder /usr/bin/ffmpeg /usr/bin/ffmpeg
+FROM jrottenberg/ffmpeg:5.1.2-python3.10
 
 # Set the working directory
 WORKDIR /workspace
