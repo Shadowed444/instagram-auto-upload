@@ -131,6 +131,11 @@ def upload_to_instagram(video_path, caption):
 def home():
     return "Server is running!"
 
+# New route for health check (Method 1)
+@app.route("/health")
+def health():
+    return "OK", 200
+
 def schedule_loop():
     while True:
         now = datetime.now(ET)  # Get current time in Washington, DC timezone
