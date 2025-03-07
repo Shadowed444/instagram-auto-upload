@@ -134,6 +134,11 @@ def home():
 # New route for health check (Method 1)
 @app.route("/health")
 def health():
+    # Disable all logging for this endpoint
+    import logging
+    log = logging.getLogger('werkzeug')
+    log.disabled = True
+    app.logger.disabled = True
     return "OK", 200
 
 def schedule_loop():
@@ -141,7 +146,7 @@ def schedule_loop():
         now = datetime.now(ET)  # Get current time in Washington, DC timezone
         ist_time = now.astimezone(IST).strftime("%H:%M")
 
-        if ist_time in ["10:00", "16:30"]:  # Runs at 10:00 AM & 5:00 PM IST
+        if ist_time in ["10:00", "17:00"]:  # Runs at 10:00 AM & 5:00 PM IST
             video = move_video()
             if video:
                 video_path = f"/To_Post/{video}"
